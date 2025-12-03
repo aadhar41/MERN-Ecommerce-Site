@@ -10,7 +10,7 @@
                 "url": "https://example.com/images/headphones1.jpg"
             }
         ],
-        "category": "electronics",
+        "category": "headphones",
         "seller": "indira electronics",
         "stock": 120,
         "numOfReviews": 2,
@@ -111,7 +111,7 @@
                 "url": "https://example.com/images/cookware.jpg"
             }
         ],
-        "category": "home & kitchen",
+        "category": "home",
         "seller": "jaipur kitchen mart",
         "stock": 40,
         "numOfReviews": 4,
@@ -135,7 +135,7 @@
                 "url": "https://example.com/images/facecream.jpg"
             }
         ],
-        "category": "beauty & health",
+        "category": "beauty/health",
         "seller": "nature care",
         "stock": 150,
         "numOfReviews": 6,
@@ -159,7 +159,7 @@
                 "url": "https://example.com/images/yogamat.jpg"
             }
         ],
-        "category": "sports & fitness",
+        "category": "sports",
         "seller": "fit life store",
         "stock": 90,
         "numOfReviews": 7,
@@ -207,7 +207,7 @@
                 "url": "https://example.com/images/toycar.jpg"
             }
         ],
-        "category": "toys & games",
+        "category": "electronics",
         "seller": "kids world",
         "stock": 60,
         "numOfReviews": 5,
@@ -231,7 +231,7 @@
                 "url": "https://example.com/images/toolkit.jpg"
             }
         ],
-        "category": "others",
+        "category": "home",
         "seller": "handy tools store",
         "stock": 35,
         "numOfReviews": 3,
