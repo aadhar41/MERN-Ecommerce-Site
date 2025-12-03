@@ -1,0 +1,35 @@
+{
+  "name": "shopit",
+  "version": "1.0.0",
+  "description": "E-Commerce",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aadhar41/MERN-Ecommerce-Site.git"
+  },
+  "keywords": [
+    "ECommerce",
+    "MERN",
+    "ReactJs",
+    "NodeJs",
+    "MongoDb"
+  ],
+  "author": "Aadhar gaur <aadhar41@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aadhar41/MERN-Ecommerce-Site/issues"
+  },
+  "homepage": "https://github.com/aadhar41/MERN-Ecommerce-Site#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-async-handler": "^1.2.0",
+    "fs-extra": "^11.3.2",
+    "mongoose": "^9.0.0"
+  }
+}

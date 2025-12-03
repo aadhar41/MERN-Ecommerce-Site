@@ -1,0 +1,23 @@
+{
+    "name": "wireless bluetooth headphones",
+    "price": 2999,
+    "description": "high quality wireless bluetooth headphones with noise cancellation and long battery life.",
+    "ratings": 4.5,
+    "images": [
+        {
+            "public_id": "prod_img_001",
+            "url": "https://example.com/images/headphones1.jpg"
+        }
+    ],
+    "category": "Electronics",
+    "seller": "indira electronics",
+    "stock": 120,
+    "numOfReviews": 2,
+    "reviews": [
+        {
+            "name": "john doe",
+            "rating": 5,
+            "comment": "excellent sound quality and very comfortable to wear."
+        }
+    ]
+}

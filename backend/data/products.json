@@ -1,0 +1,247 @@
+[
+    {
+        "name": "wireless bluetooth headphones",
+        "price": 2999,
+        "description": "high quality wireless bluetooth headphones with noise cancellation and long battery life.",
+        "ratings": 4.5,
+        "images": [
+            {
+                "public_id": "prod_img_001",
+                "url": "https://example.com/images/headphones1.jpg"
+            }
+        ],
+        "category": "electronics",
+        "seller": "indira electronics",
+        "stock": 120,
+        "numOfReviews": 2,
+        "reviews": [
+            {
+                "name": "john doe",
+                "rating": 5,
+                "comment": "excellent sound quality and very comfortable to wear."
+            },
+            {
+                "name": "jane smith",
+                "rating": 4,
+                "comment": "great headphones, battery lasts long but cushions could be softer."
+            }
+        ],
+        "createdAt": "2025-12-03T14:50:00.000Z"
+    },
+    {
+        "name": "cotton summer t shirt",
+        "price": 499,
+        "description": "lightweight cotton t shirt perfect for summer wear with breathable fabric.",
+        "ratings": 4.2,
+        "images": [
+            {
+                "public_id": "prod_img_002",
+                "url": "https://example.com/images/tshirt.jpg"
+            }
+        ],
+        "category": "clothing",
+        "seller": "jaipur fashion hub",
+        "stock": 200,
+        "numOfReviews": 3,
+        "reviews": [
+            {
+                "name": "rahul mehta",
+                "rating": 4,
+                "comment": "comfortable and fits well."
+            }
+        ],
+        "createdAt": "2025-12-03T14:51:00.000Z"
+    },
+    {
+        "name": "running sports shoes",
+        "price": 2499,
+        "description": "durable running shoes designed for comfort and performance with breathable mesh.",
+        "ratings": 4.7,
+        "images": [
+            {
+                "public_id": "prod_img_003",
+                "url": "https://example.com/images/shoes.jpg"
+            }
+        ],
+        "category": "footwear",
+        "seller": "sporty step",
+        "stock": 75,
+        "numOfReviews": 5,
+        "reviews": [
+            {
+                "name": "amit singh",
+                "rating": 5,
+                "comment": "perfect for daily runs and gym workouts."
+            }
+        ],
+        "createdAt": "2025-12-03T14:52:00.000Z"
+    },
+    {
+        "name": "leather wallet",
+        "price": 899,
+        "description": "premium leather wallet with multiple compartments and sleek design.",
+        "ratings": 4.3,
+        "images": [
+            {
+                "public_id": "prod_img_004",
+                "url": "https://example.com/images/wallet.jpg"
+            }
+        ],
+        "category": "accessories",
+        "seller": "classic leather works",
+        "stock": 50,
+        "numOfReviews": 2,
+        "reviews": [
+            {
+                "name": "suresh kumar",
+                "rating": 4,
+                "comment": "good quality leather and stylish look."
+            }
+        ],
+        "createdAt": "2025-12-03T14:53:00.000Z"
+    },
+    {
+        "name": "stainless steel cookware set",
+        "price": 3499,
+        "description": "complete stainless steel cookware set for modern kitchens with durable finish.",
+        "ratings": 4.6,
+        "images": [
+            {
+                "public_id": "prod_img_005",
+                "url": "https://example.com/images/cookware.jpg"
+            }
+        ],
+        "category": "home & kitchen",
+        "seller": "jaipur kitchen mart",
+        "stock": 40,
+        "numOfReviews": 4,
+        "reviews": [
+            {
+                "name": "neha gupta",
+                "rating": 5,
+                "comment": "excellent set, very durable and easy to clean."
+            }
+        ],
+        "createdAt": "2025-12-03T14:54:00.000Z"
+    },
+    {
+        "name": "herbal face cream",
+        "price": 299,
+        "description": "natural herbal face cream for glowing skin with aloe vera and turmeric.",
+        "ratings": 4.1,
+        "images": [
+            {
+                "public_id": "prod_img_006",
+                "url": "https://example.com/images/facecream.jpg"
+            }
+        ],
+        "category": "beauty & health",
+        "seller": "nature care",
+        "stock": 150,
+        "numOfReviews": 6,
+        "reviews": [
+            {
+                "name": "pooja sharma",
+                "rating": 4,
+                "comment": "gentle on skin and smells nice."
+            }
+        ],
+        "createdAt": "2025-12-03T14:55:00.000Z"
+    },
+    {
+        "name": "yoga mat",
+        "price": 799,
+        "description": "anti slip yoga mat with extra cushioning for comfort during workouts.",
+        "ratings": 4.8,
+        "images": [
+            {
+                "public_id": "prod_img_007",
+                "url": "https://example.com/images/yogamat.jpg"
+            }
+        ],
+        "category": "sports & fitness",
+        "seller": "fit life store",
+        "stock": 90,
+        "numOfReviews": 7,
+        "reviews": [
+            {
+                "name": "arjun patel",
+                "rating": 5,
+                "comment": "perfect grip and very comfortable."
+            }
+        ],
+        "createdAt": "2025-12-03T14:56:00.000Z"
+    },
+    {
+        "name": "fiction novel paperback",
+        "price": 399,
+        "description": "engaging fiction novel with thrilling storyline and captivating characters.",
+        "ratings": 4.0,
+        "images": [
+            {
+                "public_id": "prod_img_008",
+                "url": "https://example.com/images/book.jpg"
+            }
+        ],
+        "category": "books",
+        "seller": "jaipur book house",
+        "stock": 300,
+        "numOfReviews": 10,
+        "reviews": [
+            {
+                "name": "meena joshi",
+                "rating": 4,
+                "comment": "great read, kept me hooked till the end."
+            }
+        ],
+        "createdAt": "2025-12-03T14:57:00.000Z"
+    },
+    {
+        "name": "remote control toy car",
+        "price": 1299,
+        "description": "fun remote control toy car with rechargeable battery and durable design.",
+        "ratings": 4.4,
+        "images": [
+            {
+                "public_id": "prod_img_009",
+                "url": "https://example.com/images/toycar.jpg"
+            }
+        ],
+        "category": "toys & games",
+        "seller": "kids world",
+        "stock": 60,
+        "numOfReviews": 5,
+        "reviews": [
+            {
+                "name": "ananya verma",
+                "rating": 5,
+                "comment": "my son loves it, very sturdy build."
+            }
+        ],
+        "createdAt": "2025-12-03T14:58:00.000Z"
+    },
+    {
+        "name": "multi purpose tool kit",
+        "price": 1999,
+        "description": "compact multi purpose tool kit with essential tools for home and garage use.",
+        "ratings": 4.5,
+        "images": [
+            {
+                "public_id": "prod_img_010",
+                "url": "https://example.com/images/toolkit.jpg"
+            }
+        ],
+        "category": "others",
+        "seller": "handy tools store",
+        "stock": 35,
+        "numOfReviews": 3,
+        "reviews": [
+            {
+                "name": "vikas yadav",
+                "rating": 5,
+                "comment": "very useful kit, good quality tools."
+            }
+        ],
+        "createdAt": "2025-12-03T14:59:00.000Z"
+    }
+]

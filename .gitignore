@@ -1,0 +1,7 @@
+node_modules/
+backend/config/config.env
+.env
+logs/
+.DS_Store
+coverage/
+.vscode/
