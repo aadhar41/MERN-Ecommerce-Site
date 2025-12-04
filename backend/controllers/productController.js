@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const logger = require("../utils/logger")('productController');
 const { isValidObjectId } = require("../utils/objectIdValidator");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
+const ApiFeatures = require("../utils/apiFeatures");
 
 
 // @desc    Create new product
@@ -31,18 +32,40 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
 });
 
 // @desc    Fetch all products
-// @route   GET /api/v1/products
+// @route   GET /api/v1/products?keyword=phone&page=1&sortBy=-price
 // @access  Public
 exports.getProducts = catchAsyncErrors(async (req, res, next) => {
     logger.log("info:", "Fetching all products");
-    const products = await Product.find();
-    if (!products) {
-        logger.log("info:", "Products not found");
-        return res.status(404).json({ success: false, message: "Products not found" });
+    const resPerPage = 8; // Number of products per page
+
+    const apiFeatures = new ApiFeatures(Product.find(), req.query)
+        .search()
+        .filter();
+
+    // Handle sorting
+    let sortBy = {};
+    if (req.query.sortBy) {
+        const sortField = req.query.sortBy.startsWith('-')
+            ? req.query.sortBy.substring(1)
+            : req.query.sortBy;
+        const sortOrder = req.query.sortBy.startsWith('-') ? -1 : 1;
+        sortBy[sortField] = sortOrder;  // Use bracket notation to use variable as key
+    } else {
+        sortBy = { createdAt: -1 }; // Default: newest first
     }
+
+    const products = await apiFeatures.query
+        .sort(sortBy)
+        .limit(resPerPage)
+        .skip(resPerPage * ((Number(req.query.page) || 1) - 1));
+
+    // Get total count for pagination
+    const totalProducts = await Product.countDocuments(apiFeatures.query.getFilter());
+
     res.status(200).json({
         success: true,
-        count: products.length,
+        totalProducts,
+        resPerPage,
         data: products,
     });
     logger.log("success:", "Products fetched successfully");
