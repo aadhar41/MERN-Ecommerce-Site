@@ -36,6 +36,10 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
 exports.getProducts = catchAsyncErrors(async (req, res, next) => {
     logger.log("info:", "Fetching all products");
     const products = await Product.find();
+    if (!products) {
+        logger.log("info:", "Products not found");
+        return res.status(404).json({ success: false, message: "Products not found" });
+    }
     res.status(200).json({
         success: true,
         count: products.length,
@@ -54,6 +58,10 @@ exports.getProductById = catchAsyncErrors(async (req, res, next) => {
         return res.status(400).json({ success: false, message: "Invalid product ID" });
     }
     const product = await Product.findById(req.params.id);
+    if (!product) {
+        logger.log("info:", "Product not found");
+        return res.status(404).json({ success: false, message: "Product not found" });
+    }
     res.status(200).json({
         success: true,
         data: product,
