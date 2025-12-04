@@ -16,8 +16,12 @@ router.use((req, res, next) => {
     next();
 });
 
-router.route("/products").get(getProducts).post(validate, createProduct);
-router.route("/products/:id").get(getProductById).put(validate, updateProduct).delete(deleteProduct);
+
+router.route("/admin/products").post(validate, createProduct);
+router.route("/admin/products/:id").get(getProductById).put(validate, updateProduct).delete(deleteProduct);
+router.route("/products").get(getProducts); // Keep public GET for all products
+router.route("/products/:id").get(getProductById); // Keep public GET for single product
+
 
 // Error handling middleware specific to this router
 router.use((err, req, res, next) => {
