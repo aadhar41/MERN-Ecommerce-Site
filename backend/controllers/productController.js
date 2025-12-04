@@ -1,12 +1,14 @@
 const Product = require("../models/product");
 const asyncHandler = require("express-async-handler");
 const logger = require("../utils/logger")('productController');
+const { isValidObjectId } = require("../utils/objectIdValidator");
+const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 
 
 // @desc    Create new product
 // @route   POST /api/v1/products
 // @access  Private/Admin
-exports.createProduct = asyncHandler(async (req, res, next) => {
+exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     logger.log("info:", "Request Body:", req.body);
     const { name, price, description, ratings, images, category, seller, stock, numOfReviews, reviews } = req.body;
     const product = await Product.create({
@@ -31,7 +33,7 @@ exports.createProduct = asyncHandler(async (req, res, next) => {
 // @desc    Fetch all products
 // @route   GET /api/v1/products
 // @access  Public
-exports.getProducts = asyncHandler(async (req, res, next) => {
+exports.getProducts = catchAsyncErrors(async (req, res, next) => {
     logger.log("info:", "Fetching all products");
     const products = await Product.find();
     res.status(200).json({
@@ -46,8 +48,11 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
 // @desc    Fetch single product
 // @route   GET /api/v1/products/:id
 // @access  Public
-exports.getProductById = asyncHandler(async (req, res, next) => {
+exports.getProductById = catchAsyncErrors(async (req, res, next) => {
     logger.log("info:", "Fetching product by ID:", req.params.id);
+    if (!isValidObjectId(req.params.id)) {
+        return res.status(400).json({ success: false, message: "Invalid product ID" });
+    }
     const product = await Product.findById(req.params.id);
     res.status(200).json({
         success: true,
@@ -59,8 +64,11 @@ exports.getProductById = asyncHandler(async (req, res, next) => {
 // @desc    Update product
 // @route   PUT /api/v1/products/:id
 // @access  Private/Admin
-exports.updateProduct = asyncHandler(async (req, res, next) => {
+exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
     logger.log("info:", "Updating product by ID:", req.params.id);
+    if (!isValidObjectId(req.params.id)) {
+        return res.status(400).json({ success: false, message: "Invalid product ID" });
+    }
     let product = await Product.findById(req.params.id);
 
     if (!product) {
@@ -86,9 +94,12 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 // @desc    Delete product
 // @route   DELETE /api/v1/products/:id
 // @access  Private/Admin
-exports.deleteProduct = asyncHandler(async (req, res, next) => {
+exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
     try {
         logger.log("info:", "Deleting product by ID:", req.params.id);
+        if (!isValidObjectId(req.params.id)) {
+            return res.status(400).json({ success: false, message: "Invalid product ID" });
+        }
         const product = await Product.findById(req.params.id);
 
         if (!product) {
