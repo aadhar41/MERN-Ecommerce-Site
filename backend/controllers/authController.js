@@ -4,6 +4,7 @@ const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const logger = require("../utils/logger")("authController");
+const sendToken = require("../utils/jwtToken");
 
 
 // @desc    Register a user
@@ -22,14 +23,10 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
         },
     });
     logger.log("success:", "User registered successfully");
-    const token = user.getJwtToken();
-    res.status(201).json({
-        success: true,
-        message: "User registered successfully",
-        data: user,
-        token,
-    });
+    // Send token to client
+    sendToken(user, 201, res);
 });
+
 
 // @desc    Login a user
 // @route   POST /api/v1/login
@@ -51,13 +48,8 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     if (!isPasswordMatched) {
         return next(new ErrorHandler("Invalid email or password", 401));
     }
-    const token = user.getJwtToken();
-    res.status(200).json({
-        success: true,
-        message: "User logged in successfully",
-        // data: user,
-        token,
-    });
+    // Send token to client
+    sendToken(user, 200, res);
 });
 
 // @desc    Logout a user
