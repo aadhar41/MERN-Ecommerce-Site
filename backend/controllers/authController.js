@@ -12,7 +12,7 @@ const sendToken = require("../utils/jwtToken");
 // @access  Public
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
-    logger.log("info:", "Registering user:", req.body);
+    logger.log("info:", "Registering user:", req.body.email);
     const user = await User.create({
         name,
         email,
@@ -83,12 +83,19 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     const resetPasswordUrl = `${req.protocol}://${req.get(
         "host"
     )}/api/v1/resetPassword/${resetToken}`;
+
     const message = `Your password reset token is as follow:\n\n${resetPasswordUrl}\n\n If you have not requested this password reset, please ignore this email.`;
+
     try {
         await sendEmail({
             email: user.email,
             subject: "ShopIt Password Reset",
             message,
+            template: "passwordReset.md",
+            context: {
+                name: user.name,
+                resetUrl: resetPasswordUrl,
+            },
         });
         logger.log("info:", "Password reset token sent to your email: " + user.email);
         res.status(200).json({

@@ -22,7 +22,7 @@ module.exports = (err, req, res, next) => {
 
     // Handling Mongoose duplicate key errors
     if (err.code === 11000) {
-        const message = `Duplicate ${Object.keys(err.keyValue)} entered`;
+        const message = `Duplicate ${Object.keys(err.keyValue)} entered. Please use a different value.`;
         error = new ErrorHandler(message, 400);
     }
 

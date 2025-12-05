@@ -1,7 +1,10 @@
 const nodemailer = require("nodemailer");
+const handlebars = require("handlebars");
+const { marked } = require("marked");
+const fs = require("fs");
+const path = require("path");
 
 const sendEmail = async (options) => {
-    // Looking to send emails in production? Check out our Email API/SMTP product!
     const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: process.env.SMTP_PORT,
@@ -11,11 +14,37 @@ const sendEmail = async (options) => {
         },
     });
 
+    let htmlToSend = options.message;
+
+    if (options.template) {
+        const templatePath = path.join(__dirname, "../templates/emails", options.template);
+        const templateSource = fs.readFileSync(templatePath, "utf8");
+
+        // Compile template with Handlebars
+        const template = handlebars.compile(templateSource);
+        const compiledContent = template(options.context);
+
+        // If markdown, convert to HTML
+        let bodyContent = compiledContent;
+        if (options.template.endsWith(".md")) {
+            bodyContent = marked(compiledContent);
+        }
+
+        // Load base layout
+        const layoutPath = path.join(__dirname, "../templates/emails/base.html");
+        const layoutSource = fs.readFileSync(layoutPath, "utf8");
+        const layoutTemplate = handlebars.compile(layoutSource);
+
+        // Inject content into layout
+        htmlToSend = layoutTemplate({ body: bodyContent });
+    }
+
     const message = {
         from: `${process.env.SMTP_FROM_NAME} <${process.env.SMTP_FROM_EMAIL}>`,
         to: options.email,
         subject: options.subject,
-        text: options.message,
+        html: htmlToSend,
+        text: options.message, // Fallback plain text
     };
 
     await transporter.sendMail(message);

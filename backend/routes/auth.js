@@ -28,7 +28,7 @@ router.post("/resetPassword/:token", catchAsyncErrors(resetPassword));
 
 // Error handling middleware specific to this router
 router.use((err, req, res, next) => {
-    logger.error(err.stack);
+    logger.error(`routes/auth.js: ${err.stack}`);
     if (err.name === 'ValidationError') {
         return res.status(400).json({ success: false, message: err.message, errors: err.errors });
     }
