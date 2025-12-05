@@ -5,6 +5,8 @@ const logger = createLogger('products');
 
 const { getProducts, createProduct, getProductById, updateProduct, deleteProduct } = require("../controllers/productController");
 
+const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
+
 const validate = (req, res, next) => {
     // This is a placeholder for your actual validation logic.
     next();
@@ -17,10 +19,13 @@ router.use((req, res, next) => {
 });
 
 
-router.route("/admin/products").post(validate, createProduct);
-router.route("/admin/products/:id").get(getProductById).put(validate, updateProduct).delete(deleteProduct);
-router.route("/products").get(getProducts); // Keep public GET for all products
-router.route("/products/:id").get(getProductById); // Keep public GET for single product
+router.route("/admin/products").post(isAuthenticatedUser, authorizeRoles("admin"), validate, createProduct);
+router.route("/admin/products/:id")
+    .get(isAuthenticatedUser, authorizeRoles("admin"), getProductById) // Added authentication and authorization for admin GET
+    .put(isAuthenticatedUser, authorizeRoles("admin"), validate, updateProduct)
+    .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteProduct);
+router.route("/products").get(isAuthenticatedUser, getProducts); // Keep public GET for all products
+router.route("/products/:id").get(isAuthenticatedUser, getProductById); // Keep public GET for single product
 
 
 // Error handling middleware specific to this router

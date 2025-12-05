@@ -5,6 +5,8 @@ const logger = createLogger('auth');
 
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../utils/errorHandler");
+const { isAuthenticatedUser } = require("../middlewares/auth");
+
 
 // Import controllers
 const { registerUser, loginUser, logoutUser, forgotPassword, resetPassword } = require("../controllers/authController");
@@ -16,7 +18,7 @@ router.post("/register", catchAsyncErrors(registerUser));
 router.post("/login", catchAsyncErrors(loginUser));
 
 // Logout a user
-router.post("/logout", catchAsyncErrors(logoutUser));
+router.post("/logout", isAuthenticatedUser, catchAsyncErrors(logoutUser));
 
 // Forgot password
 router.post("/forgotPassword", catchAsyncErrors(forgotPassword));

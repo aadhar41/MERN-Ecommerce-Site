@@ -57,7 +57,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 // @access  Private
 exports.logoutUser = catchAsyncErrors(async (req, res, next) => {
     res.cookie("token", null, {
-        expires: Date.now(),
+        expires: new Date(Date.now()),
         httpOnly: true,
     });
     res.status(200).json({
