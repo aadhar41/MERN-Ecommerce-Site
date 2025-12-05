@@ -12,7 +12,7 @@ const sendToken = (user, statusCode, res) => {
     res.cookie("token", token, options);
     res.status(statusCode).json({
         success: true,
-        message: "User logged in successfully",
+        message: user.message || "Login successful",
         // data: user,
         token,
     });

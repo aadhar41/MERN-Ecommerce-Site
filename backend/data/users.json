@@ -1,0 +1,27 @@
+[
+    {
+        "name": "Alice Johnson",
+        "email": "alice.j@yopmail.com",
+        "password": "test1234"
+    },
+    {
+        "name": "Bob Smith",
+        "email": "bob.smith@yopmail.com",
+        "password": "securePass!"
+    },
+    {
+        "name": "Charlie Brown",
+        "email": "charlie.b@yopmail.com",
+        "password": "mypassword2025"
+    },
+    {
+        "name": "Diana Prince",
+        "email": "diana.p@yopmail.com",
+        "password": "wonderWoman42"
+    },
+    {
+        "name": "Ethan Hunt",
+        "email": "ethan.h@yopmail.com",
+        "password": "missionImpossible"
+    }
+]

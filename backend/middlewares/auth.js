@@ -36,6 +36,7 @@ exports.isAuthenticatedUser = async (req, res, next) => {
 // Middleware to authorize user roles
 exports.authorizeRoles = (...roles) => {
     return catchAsyncErrors(async (req, res, next) => {
+        logger.log("info:", "Authorizing user role:", req.user.role + " " + roles);
         if (!req.user || !roles.includes(req.user.role)) {
             logger.log("info:", "Unauthorized access attempt");
             return next(new ErrorHandler(`Role (${req.user ? req.user.role : 'unauthenticated'}) is not allowed to access this resource.`, 403));

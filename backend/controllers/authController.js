@@ -53,6 +53,61 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 
+// @desc    Get logged in user info
+// @route   GET /api/v1/me
+// @access  Private
+exports.getUserProfile = catchAsyncErrors(async (req, res, next) => {
+    logger.log("info:", "Getting logged in user info:", req.user.id);
+    const user = await User.findById(req.user.id);
+    logger.log("success:", "User info retrieved successfully");
+    res.status(200).json({
+        success: true,
+        user,
+    });
+});
+
+
+// @desc    Update logged in user password
+// @route   PUT /api/v1/password/update
+// @access  Private
+exports.updateUserPassword = catchAsyncErrors(async (req, res, next) => {
+    logger.log("info:", "Updating logged in user password:", req.user.id);
+    const user = await User.findById(req.user.id).select("+password");
+    if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+    }
+    // Compare password
+    const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
+    if (!isPasswordMatched) {
+        logger.log("error:", "Invalid old password");
+        return next(new ErrorHandler("Invalid old password", 401));
+    }
+    user.password = req.body.password;
+    await user.save();
+    logger.log("success:", "User password updated successfully");
+    // Send token to client
+    user.message = "Password updated successfully";
+    sendToken(user, 200, res);
+});
+
+
+// @desc    Update logged in user info
+// @route   PUT /api/v1/update/userprofile
+// @access  Private
+exports.updateUserProfile = catchAsyncErrors(async (req, res, next) => {
+    logger.log("info:", "Updating logged in user info:", req.user.id);
+    const user = await User.findById(req.user.id);
+    user.name = req.body.name;
+    user.email = req.body.email;
+    await user.save();
+    logger.log("success:", "User info updated successfully");
+    res.status(200).json({
+        success: true,
+        user,
+    });
+});
+
+
 // @desc    Logout a user
 // @route   POST /api/v1/logout
 // @access  Private
@@ -139,3 +194,91 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
+// Admin Routes
+
+// @desc    Get all users
+// @route   GET /api/v1/admin/users
+// @access  Private
+exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
+    logger.log("info:", "Getting all users");
+    const users = await User.find();
+    if (!users) {
+        logger.log("error:", "Users not found");
+        return next(new ErrorHandler("Users not found", 404));
+    }
+    logger.log("success:", "Users retrieved successfully");
+    res.status(200).json({
+        success: true,
+        users,
+    });
+});
+
+
+// @desc    Get user details
+// @route   GET /api/v1/admin/user/:id
+// @access  Private
+exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
+    logger.log("info:", "Getting user details:", req.params.id);
+    const user = await User.findById(req.params.id);
+    if (!user) {
+        logger.log("error:", "User not found");
+        return next(new ErrorHandler("User not found", 404));
+    }
+    logger.log("success:", "User details retrieved successfully");
+    res.status(200).json({
+        success: true,
+        user,
+    });
+});
+
+
+// @desc    Update admin user
+// @route   PUT /api/v1/admin/user/:id
+// @access  Private
+exports.updateUser = catchAsyncErrors(async (req, res, next) => {
+    logger.log("info:", "Updating user:", req.params.id);
+    const newUserData = {
+        name: req.body.name,
+        email: req.body.email,
+        role: req.body.role,
+    };
+
+    if (!newUserData.name || !newUserData.email || !newUserData.role) {
+        logger.log("error:", "Invalid user data");
+        return next(new ErrorHandler("Invalid user data", 400));
+    }
+
+    const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+    });
+
+    if (!user) {
+        logger.log("error:", "User not found");
+        return next(new ErrorHandler("User not found", 404));
+    }
+
+    logger.log("success:", "User updated successfully");
+    res.status(200).json({
+        success: true,
+        user,
+    });
+});
+
+// @desc    Delete admin user
+// @route   DELETE /api/v1/admin/user/:id
+// @access  Private
+exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
+    logger.log("info:", "Deleting user:", req.params.id);
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+        logger.log("error:", "User not found");
+        return next(new ErrorHandler("User not found", 404));
+    }
+    logger.log("success:", "User deleted successfully");
+    res.status(200).json({
+        success: true,
+        // user,
+    });
+});
