@@ -243,5 +243,53 @@
             }
         ],
         "createdAt": "2025-12-03T14:59:00.000Z"
+    },
+    {
+        "name": "remote control toy car",
+        "price": 1299,
+        "description": "fun remote control toy car with rechargeable battery and durable design.",
+        "ratings": 4.4,
+        "images": [
+            {
+                "public_id": "prod_img_009",
+                "url": "https://example.com/images/toycar.jpg"
+            }
+        ],
+        "category": "electronics",
+        "seller": "kids world",
+        "stock": 60,
+        "numOfReviews": 5,
+        "reviews": [
+            {
+                "name": "ananya verma",
+                "rating": 5,
+                "comment": "my son loves it, very sturdy build."
+            }
+        ],
+        "createdAt": "2025-12-03T14:58:00.000Z"
+    },
+    {
+        "name": "multi purpose tool kit",
+        "price": 1999,
+        "description": "compact multi purpose tool kit with essential tools for home and garage use.",
+        "ratings": 4.5,
+        "images": [
+            {
+                "public_id": "prod_img_010",
+                "url": "https://example.com/images/toolkit.jpg"
+            }
+        ],
+        "category": "home",
+        "seller": "handy tools store",
+        "stock": 35,
+        "numOfReviews": 3,
+        "reviews": [
+            {
+                "name": "vikas yadav",
+                "rating": 5,
+                "comment": "very useful kit, good quality tools."
+            }
+        ],
+        "createdAt": "2025-12-03T14:59:00.000Z"
     }
 ]
