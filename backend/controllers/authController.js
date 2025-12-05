@@ -52,6 +52,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     sendToken(user, 200, res);
 });
 
+
 // @desc    Logout a user
 // @route   POST /api/v1/logout
 // @access  Private
@@ -66,12 +67,15 @@ exports.logoutUser = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
+
 // @desc    Forgot password
 // @route   POST /api/v1/forgotPassword
 // @access  Public
 exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
+    logger.log("info:", "Forgot password:", req.body.email);
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
+        logger.log("error:", "User not found");
         return next(new ErrorHandler("User not found", 404));
     }
     const resetToken = user.getResetPasswordToken();
@@ -79,18 +83,20 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     const resetPasswordUrl = `${req.protocol}://${req.get(
         "host"
     )}/api/v1/resetPassword/${resetToken}`;
-    const message = `Your password reset token is as follow:\n\n${resetPasswordUrl}`;
+    const message = `Your password reset token is as follow:\n\n${resetPasswordUrl}\n\n If you have not requested this password reset, please ignore this email.`;
     try {
         await sendEmail({
             email: user.email,
             subject: "ShopIt Password Reset",
             message,
         });
+        logger.log("info:", "Password reset token sent to your email: " + user.email);
         res.status(200).json({
             success: true,
-            message: "Password reset token sent to your email",
+            message: "Password reset token sent to your email: " + user.email,
         });
     } catch (error) {
+        logger.log("error:", "Error sending password reset token");
         user.resetPasswordToken = undefined;
         user.resetPasswordExpire = undefined;
         await user.save({ validateBeforeSave: false });
@@ -102,6 +108,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
 // @route   POST /api/v1/resetPassword/:token
 // @access  Public
 exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
+    logger.log("info:", "Reset password:", req.params.token);
     const resetPasswordToken = crypto
         .createHash("sha256")
         .update(req.params.token)
@@ -111,12 +118,14 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
         resetPasswordExpire: { $gt: Date.now() },
     });
     if (!user) {
+        logger.log("error:", "Invalid reset password token");
         return next(new ErrorHandler("Invalid reset password token", 400));
     }
     user.password = req.body.password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save();
+    logger.log("info:", "Password reset successfully");
     res.status(200).json({
         success: true,
         message: "Password reset successfully",
