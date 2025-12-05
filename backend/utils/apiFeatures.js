@@ -18,15 +18,16 @@ class APIFeatures {
     }
 
     filter() {
-        const queryCopy = { ...this.queryStr }
+        const queryObj = { ...this.queryStr };
 
-        // Remove fields from the query
-        const removeFields = ["keyword", "page", "limit", "category", "sortBy"];
-        removeFields.forEach((key) => delete queryCopy[key]);
+        // Exclude fields that are handled by other methods
+        const excludedFields = ["keyword", "page", "limit", "sortBy", "select", "limitFields"];
+        excludedFields.forEach((el) => delete queryObj[el]);
 
-        // Add filter for category
-        let queryStr = JSON.stringify(queryCopy);
-        queryStr = queryStr.replace(",\"category\":\"", "$")
+        // Advanced filtering for operators like gt, gte, lt, lte, in
+        let queryStr = JSON.stringify(queryObj);
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt|in)\b/g, (match) => `$${match}`);
+
         this.query = this.query.find(JSON.parse(queryStr));
         return this;
     }

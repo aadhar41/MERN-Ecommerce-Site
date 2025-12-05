@@ -4,6 +4,7 @@ const logger = require("../utils/logger")('productController');
 const { isValidObjectId } = require("../utils/objectIdValidator");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ApiFeatures = require("../utils/apiFeatures");
+const ErrorHandler = require("../utils/errorHandler");
 
 
 // @desc    Create new product
@@ -11,24 +12,13 @@ const ApiFeatures = require("../utils/apiFeatures");
 // @access  Private/Admin
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     logger.log("info:", "Request Body:", req.body);
-    const { name, price, description, ratings, images, category, seller, stock, numOfReviews, reviews } = req.body;
-    const product = await Product.create({
-        name,
-        price,
-        description,
-        ratings,
-        images,
-        category,
-        seller,
-        stock,
-        numOfReviews,
-        reviews,
-    });
+    req.body.user = req.user._id;
+    const product = await Product.create(req.body);
     res.status(201).json({
         success: true,
         data: product,
     });
-    logger.log("success:", "Product created successfully");
+    logger.log("success:", "Product created successfully.");
 });
 
 // @desc    Fetch all products
