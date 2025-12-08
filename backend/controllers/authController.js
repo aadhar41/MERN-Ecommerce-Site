@@ -167,7 +167,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
 });
 
 // @desc    Reset password
-// @route   POST /api/v1/resetPassword/:token
+// @route   GET /api/v1/resetPassword/:token
 // @access  Public
 exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     logger.log("info:", "Reset password:", req.params.token);
