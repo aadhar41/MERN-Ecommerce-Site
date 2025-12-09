@@ -1,0 +1,43 @@
+{
+    "orderItems": [
+        {
+            "name": "Cool T‑Shirt",
+            "quantity": 2,
+            "image": "https://example.com/images/tshirt.jpg",
+            "price": 19.99,
+            "product": "64a1f2c5e5b6c8d9e0f12345" // <-- ObjectId of the product in your DB
+        },
+        {
+            "name": "Stylish Sneakers",
+            "quantity": 1,
+            "image": "https://example.com/images/sneakers.jpg",
+            "price": 79.5,
+            "product": "64a1f2c5e5b6c8d9e0f67890"
+        }
+    ],
+    "shippingInfo": {
+        "address": "123 Orchard Road",
+        "city": "Singapore",
+        "state": "Central",
+        "country": "Singapore",
+        "postalCode": "238823",
+        "phoneNo": "+65 9123 4567"
+    },
+    "paymentInfo": {
+        "id": "PAYID-1234567890",
+        "status": "COMPLETED",
+        "update_time": "2025-12-09T07:30:00Z",
+        "email_address": "buyer@example.com"
+    },
+    "itemPrice": 119.48, // sum of (price * quantity) for all items
+    "shippingPrice": 5.00,
+    "taxPrice": 8.00,
+    "totalPrice": 132.48,
+    "isPaid": true,
+    "paidAt": "2025-12-09T07:31:00Z",
+    "orderStatus": "Processing",
+    "isDelivered": false,
+    "deliveredAt": null,
+    "createdAt": "2025-12-09T07:32:00Z",
+    "updatedAt": "2025-12-09T07:32:00Z"
+}
