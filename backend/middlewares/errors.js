@@ -1,8 +1,34 @@
 const ErrorHandler = require("../utils/errorHandler");
+const logger = require('../utils/logger')('error');
 
 module.exports = (err, req, res, next) => {
-    err.statusCode = err.statusCode || 500;
-    err.message = err.message || "Internal Server Error";
+    // 1️⃣ Log the full error (stack, request info)
+    logger.error({
+        message: err.message,
+        stack: err.stack,
+        method: req.method,
+        url: req.originalUrl,
+        ip: req.ip,
+        // you can add user id if you have it:
+        userId: req.user ? req.user._id : undefined,
+    });
+
+    // 2️⃣ Determine status code
+    const status = err.statusCode || 500;
+
+    // 3️⃣ Hide internal details for 5xx errors
+    const response = {
+        success: false,
+        message:
+            status >= 500
+                ? 'Internal Server Error' // generic for production
+                : err.message,
+    };
+
+    // 4️⃣ Optionally include validation details
+    if (err.name === 'ValidationError' && err.errors) {
+        response.errors = err.errors;
+    }
 
     let error = { ...err };
 

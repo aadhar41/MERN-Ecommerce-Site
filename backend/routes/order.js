@@ -1,25 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const { newOrder, getSingleOrder, myOrders } = require("../controllers/orderController");
+const {
+    newOrder,
+    getSingleOrder,
+    myOrders,
+    getAllOrders,
+    updateOrderToPaid,
+} = require("../controllers/orderController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
 const createLogger = require("../utils/logger");
-const logger = createLogger('order');
+const logger = createLogger("order");
 
-// ---------- 1️⃣ Global logger (runs for every request) ----------
+// Global logger – logs every request hitting this router
 router.use((req, res, next) => {
     logger.log(`[${req.method}] ${req.originalUrl}`);
     next();
 });
 
-
-// ---------- 2️⃣ Validation placeholder ----------
+// Validation placeholder (replace with real validation later)
 const validate = (req, res, next) => {
-    // TODO: add real validation (e.g. Joi, express‑validator)
     next();
 };
 
-
-// ---------- 3️⃣ Routes (auth runs after the global logger) ----------
+// -------------------- Public routes (admin & user) --------------------
 router
     .route("/order/new")
     .post(isAuthenticatedUser, authorizeRoles("admin", "user"), validate, newOrder);
@@ -32,8 +35,16 @@ router
     .route("/orders/me")
     .get(isAuthenticatedUser, authorizeRoles("admin", "user"), validate, myOrders);
 
+// -------------------- Admin‑only routes (mounted under /api/v1/admin) --------------------
+router
+    .route("/orders")
+    .get(isAuthenticatedUser, authorizeRoles("admin"), validate, getAllOrders);
 
-// ---------- 4️⃣ Router‑specific error handler ----------
+router
+    .route("/order/:id/pay")
+    .put(isAuthenticatedUser, authorizeRoles("admin"), validate, updateOrderToPaid);
+
+// Router‑specific error handler
 router.use((err, req, res, next) => {
     logger.error(`routes/order.js: ${err.stack}`);
     if (err.name === "ValidationError") {
