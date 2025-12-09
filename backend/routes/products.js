@@ -9,7 +9,8 @@ const {
     getProductById,
     updateProduct,
     deleteProduct,
-    createProductReview
+    createProductReview,
+    getProductReviews
 } = require("../controllers/productController");
 
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
@@ -32,9 +33,9 @@ router.route("/admin/products/:id")
     .put(isAuthenticatedUser, authorizeRoles("admin"), validate, updateProduct)
     .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteProduct);
 router.route("/products").get(isAuthenticatedUser, getProducts); // Keep public GET for all products
+router.route("/products/reviews").get(isAuthenticatedUser, getProductReviews); // Keep public GET for reviews
 router.route("/products/:id").get(isAuthenticatedUser, getProductById); // Keep public GET for single product
-router.route("/products/review").put(isAuthenticatedUser, createProductReview);
-
+router.route("/products/review").put(isAuthenticatedUser, createProductReview); // Keep public PUT for review
 
 // Error handling middleware specific to this router
 router.use((err, req, res, next) => {

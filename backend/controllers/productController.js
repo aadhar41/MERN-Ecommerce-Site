@@ -178,7 +178,7 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
         loggerReview.log("info:", "Product already reviewed");
         // Update
         product.reviews.forEach((review) => {
-            if (review.user.toString() === req.user._id.toString()) {
+            if (review.user && review.user.toString() === req.user._id.toString()) {
                 review.rating = rating;
                 review.comment = comment;
             }
@@ -199,5 +199,26 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
 });
 
 
+// @desc    Get product reviews
+// @route   GET /api/v1/reviews?id=<productId>
+// @access  Private
+exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
+    loggerReview.log("info:", "Fetching product reviews by ID:", req.query.id);
+    if (!req.query.id) {
+        loggerReview.log("info:", "Invalid product ID");
+        return res.status(400).json({ success: false, message: "Invalid product ID" });
+    }
+    const product = await Product.findById(req.query.id);
+    if (!product) {
+        loggerReview.log("info:", "Product not found");
+        return res.status(404).json({ success: false, message: "Product not found" });
+    }
+    const reviews = product.reviews;
+    res.status(200).json({
+        success: true,
+        data: reviews,
+    });
+    loggerReview.log("success:", "Product reviews fetched successfully.");
+});
 
 
