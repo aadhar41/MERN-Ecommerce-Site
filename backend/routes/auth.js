@@ -37,7 +37,7 @@ router.put("/update/userprofile", isAuthenticatedUser, catchAsyncErrors(updateUs
 router.post("/forgotPassword", catchAsyncErrors(forgotPassword));
 
 // Reset password
-router.post("/resetPassword/:token", catchAsyncErrors(resetPassword));
+router.get("/resetPassword/:token", catchAsyncErrors(resetPassword));
 
 // Admin routes
 router.get("/admin/users", isAuthenticatedUser, authorizeRoles("admin"), catchAsyncErrors(getAllUsers));
