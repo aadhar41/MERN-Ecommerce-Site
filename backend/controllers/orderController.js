@@ -57,7 +57,7 @@ exports.newOrder = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
-// @desc    Get single order
+// @desc    Get single order by ID for logged in admin and user
 // @route   GET /api/v1/orders/:id
 // @access  Private
 exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
@@ -78,13 +78,13 @@ exports.getSingleOrder = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
-// @desc    Get logged in user orders
+// @desc    Get logged in user orders for admin and user
 // @route   GET /api/v1/orders/me
 // @access  Private
 exports.myOrders = catchAsyncErrors(async (req, res, next) => {
     try {
-        logger.log("info:", "Fetching orders for user:", req.user._id);
-        const orders = await Order.find({ user: req.user._id }).populate("user", "name email").populate("orderItems.product", "name price image");
+        logger.log("info:", "Fetching orders for user:", req.user.id);
+        const orders = await Order.find({ user: req.user.id }).populate("user", "name email").populate("orderItems.product", "name price image");
         logger.log("success:", "Orders fetched successfully");
         res.status(200).json({
             success: true,
