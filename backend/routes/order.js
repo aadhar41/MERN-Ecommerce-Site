@@ -5,6 +5,8 @@ const {
     getSingleOrder,
     myOrders,
     getAllOrders,
+    updateOrder,
+    deleteOrder,
     updateOrderToPaid,
 } = require("../controllers/orderController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
@@ -39,6 +41,14 @@ router
 router
     .route("/orders")
     .get(isAuthenticatedUser, authorizeRoles("admin"), validate, getAllOrders);
+
+router
+    .route("/order/:id")
+    .put(isAuthenticatedUser, authorizeRoles("admin"), validate, updateOrder);
+
+router
+    .route("/order/:id")
+    .delete(isAuthenticatedUser, authorizeRoles("admin"), validate, deleteOrder);
 
 router
     .route("/order/:id/pay")

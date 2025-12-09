@@ -1,43 +1,36 @@
 {
     "orderItems": [
         {
-            "name": "Cool T‑Shirt",
-            "quantity": 2,
-            "image": "https://example.com/images/tshirt.jpg",
-            "price": 19.99,
-            "product": "64a1f2c5e5b6c8d9e0f12345" // <-- ObjectId of the product in your DB
-        },
-        {
-            "name": "Stylish Sneakers",
+            "name": "wireless bluetooth headphones",
             "quantity": 1,
-            "image": "https://example.com/images/sneakers.jpg",
-            "price": 79.5,
-            "product": "64a1f2c5e5b6c8d9e0f67890"
+            "image": "https://example.com/images/headphones1.jpg",
+            "price": 2004.99,
+            "product": "69303eea31271e157e503a6a"
         }
     ],
     "shippingInfo": {
-        "address": "123 Orchard Road",
-        "city": "Singapore",
-        "state": "Central",
-        "country": "Singapore",
-        "postalCode": "238823",
-        "phoneNo": "+65 9123 4567"
+        "address": "123 Main Street",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "country": "India",
+        "postalCode": "302001",
+        "phoneNo": "+91 98765 43210"
     },
     "paymentInfo": {
-        "id": "PAYID-1234567890",
+        "id": "PAYID-111222333",
         "status": "COMPLETED",
-        "update_time": "2025-12-09T07:30:00Z",
-        "email_address": "buyer@example.com"
+        "update_time": "2025-12-06T10:00:00Z",
+        "email_address": "john.doe@example.com"
     },
-    "itemPrice": 119.48, // sum of (price * quantity) for all items
-    "shippingPrice": 5.00,
-    "taxPrice": 8.00,
-    "totalPrice": 132.48,
+    "itemPrice": 2004.99,
+    "shippingPrice": 50.00,
+    "taxPrice": 200.50,
+    "totalPrice": 2255.49,
     "isPaid": true,
-    "paidAt": "2025-12-09T07:31:00Z",
+    "paidAt": "2025-12-06T10:01:00Z",
     "orderStatus": "Processing",
     "isDelivered": false,
     "deliveredAt": null,
-    "createdAt": "2025-12-09T07:32:00Z",
-    "updatedAt": "2025-12-09T07:32:00Z"
+    "createdAt": "2025-12-06T10:02:00Z",
+    "updatedAt": "2025-12-06T10:02:00Z"
 }
