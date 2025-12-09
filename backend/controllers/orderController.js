@@ -96,4 +96,56 @@ exports.myOrders = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
+// @desc    Get all orders
+// @route   GET /api/v1/orders
+// @access  Private
+exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
+    try {
+        logger.log("info:", "Fetching all orders");
+        const orders = await Order.find().populate("user", "name email").populate("orderItems.product", "name price image");
+        logger.log("success:", "Orders fetched successfully");
+        if (!orders) {
+            return next(new ErrorHandler("Orders not found", 404));
+        }
+        const totalAmount = orders.reduce((acc, order) => acc + order.totalPrice, 0);
+        res.status(200).json({
+            success: true,
+            totalAmount,
+            orders,
+        })
+    } catch (error) {
+        logger.log("error:", "Error fetching orders", error);
+        next(error);
+    }
+});
 
+
+// @desc    Update order to paid
+// @route   PUT /api/v1/orders/:id/pay
+// @access  Private
+exports.updateOrderToPaid = catchAsyncErrors(async (req, res, next) => {
+    try {
+        logger.log("info:", "Updating order to paid:", req.params.id);
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return next(new ErrorHandler("Order not found with this ID", 404));
+        }
+        order.isPaid = true;
+        order.paidAt = Date.now();
+        order.paymentInfo = {
+            id: req.body.id,
+            status: req.body.status,
+            update_time: req.body.update_time,
+            email_address: req.body.email_address
+        };
+        await order.save();
+        logger.log("success:", "Order updated successfully");
+        res.status(200).json({
+            success: true,
+            order
+        })
+    } catch (error) {
+        logger.log("error:", "Error updating order", error);
+        next(error);
+    }
+});
