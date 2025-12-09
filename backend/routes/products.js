@@ -3,7 +3,14 @@ const router = express.Router();
 const createLogger = require("../utils/logger");
 const logger = createLogger('products');
 
-const { getProducts, createProduct, getProductById, updateProduct, deleteProduct } = require("../controllers/productController");
+const {
+    getProducts,
+    createProduct,
+    getProductById,
+    updateProduct,
+    deleteProduct,
+    createProductReview
+} = require("../controllers/productController");
 
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
 
@@ -26,6 +33,7 @@ router.route("/admin/products/:id")
     .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteProduct);
 router.route("/products").get(isAuthenticatedUser, getProducts); // Keep public GET for all products
 router.route("/products/:id").get(isAuthenticatedUser, getProductById); // Keep public GET for single product
+router.route("/products/review").put(isAuthenticatedUser, createProductReview);
 
 
 // Error handling middleware specific to this router

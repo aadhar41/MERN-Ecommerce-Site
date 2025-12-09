@@ -1,6 +1,7 @@
 const Product = require("../models/product");
 const asyncHandler = require("express-async-handler");
 const logger = require("../utils/logger")('productController');
+const loggerReview = require("../utils/logger")('productControllerReview');
 const { isValidObjectId } = require("../utils/objectIdValidator");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ApiFeatures = require("../utils/apiFeatures");
@@ -146,6 +147,56 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
+
+// @desc    Create new review
+// @route   PUT /api/v1/products/:id/review
+// @access  Private
+exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
+    const { rating, comment, productId } = req.body;
+    loggerReview.log("info:", "Creating product review by ID:", productId);
+    const product = await Product.findById(productId);
+    if (!isValidObjectId(productId)) {
+        return res.status(400).json({ success: false, message: "Invalid product ID" });
+    }
+
+    const review = {
+        user: req.user._id,
+        name: req.user.name,
+        rating: Number(rating),
+        comment,
+    };
+
+    if (!product) {
+        loggerReview.log("info:", "Product not found");
+        return res.status(404).json({
+            success: false,
+            message: "Product not found",
+        });
+    }
+    const isreviewed = product.reviews.find((review) => review.user && review.user.toString() === req.user._id.toString());
+    if (isreviewed) {
+        loggerReview.log("info:", "Product already reviewed");
+        // Update
+        product.reviews.forEach((review) => {
+            if (review.user.toString() === req.user._id.toString()) {
+                review.rating = rating;
+                review.comment = comment;
+            }
+        });
+    } else {
+        // Create
+        product.reviews.push(review);
+        product.numOfReviews = product.reviews.length;
+    }
+    product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+    await product.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+        success: true,
+        data: review,
+    });
+    loggerReview.log("success:", "Product review created successfully.");
+});
 
 
 
