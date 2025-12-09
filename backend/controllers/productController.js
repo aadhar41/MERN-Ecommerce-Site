@@ -222,3 +222,33 @@ exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
 });
 
 
+// @desc    Delete Product review
+// @route   DELETE /api/v1/products/:id/review
+// @access  Private
+exports.deleteProductReview = catchAsyncErrors(async (req, res, next) => {
+    loggerReview.log("info:", "Deleting product review by ID:", req.query.productId);
+    if (!isValidObjectId(req.query.productId)) {
+        return res.status(400).json({ success: false, message: "Invalid product ID" });
+    }
+    const product = await Product.findById(req.query.productId);
+    if (!product) {
+        loggerReview.log("info:", "Product not found");
+        return res.status(404).json({ success: false, message: "Product not found" });
+    }
+    const reviews = product.reviews.filter((review) => review._id.toString() !== req.query.id.toString());
+    if (reviews.length === product.reviews.length) {
+        return res.status(404).json({ success: false, message: "Review not found" });
+    }
+    const numOfReviews = reviews.length;
+    const ratings = numOfReviews === 0 ? 0 : reviews.reduce((acc, item) => item.rating + acc, 0) / numOfReviews;
+    await Product.findByIdAndUpdate(req.query.productId, {
+        reviews, numOfReviews, ratings
+    }, {
+        new: true, runValidators: false, validateBeforeSave: false, useFindAndModify: false
+    });
+    res.status(200).json({
+        success: true,
+        data: reviews,
+    });
+    loggerReview.log("success:", "Product review deleted successfully.");
+});
