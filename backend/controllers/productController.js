@@ -17,7 +17,7 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     const product = await Product.create(req.body);
     res.status(201).json({
         success: true,
-        data: product,
+        product,
     });
     logger.log("success:", "Product created successfully.");
 });
@@ -57,7 +57,7 @@ exports.getProducts = catchAsyncErrors(async (req, res, next) => {
         success: true,
         totalProducts,
         resPerPage,
-        data: products,
+        products,
     });
     logger.log("success:", "Products fetched successfully");
 });
@@ -78,7 +78,7 @@ exports.getProductById = catchAsyncErrors(async (req, res, next) => {
     }
     res.status(200).json({
         success: true,
-        data: product,
+        product,
     });
     logger.log("success:", "Product fetched successfully");
 });
@@ -108,7 +108,7 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        data: product,
+        product,
     });
     logger.log("success:", "Product updated successfully");
 });
@@ -193,7 +193,7 @@ exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        data: review,
+        review,
     });
     loggerReview.log("success:", "Product review created successfully.");
 });
@@ -216,7 +216,7 @@ exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
     const reviews = product.reviews;
     res.status(200).json({
         success: true,
-        data: reviews,
+        reviews,
     });
     loggerReview.log("success:", "Product reviews fetched successfully.");
 });
@@ -248,7 +248,7 @@ exports.deleteProductReview = catchAsyncErrors(async (req, res, next) => {
     });
     res.status(200).json({
         success: true,
-        data: reviews,
+        reviews,
     });
     loggerReview.log("success:", "Product review deleted successfully.");
 });
