@@ -1,0 +1,1129 @@
+{
+  "info": {
+    "_postman_id": "af3fbeae-0931-4cec-9240-64d2d985d085",
+    "name": "ShopIt",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "id": "efa7260e-58e0-42b9-b4e3-50ac2a994580",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/products?page=1&sortBy=ratings",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "shoe",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "ratings"
+                },
+                {
+                  "key": "category",
+                  "value": "footwear",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "## 🔧 Basic Setup\n\n1. [http://localhost:4000/api/v1](http://localhost:4000/api/v1)\n    \n2. **Method**: GET\n    \n3. /products\n    \n\n---\n\n## 📋 Test Scenarios\n\n### 1\\. **Get All Products (No Filters)**\n\n```\nGET http://localhost:4000/api/v1/products\n\n ```\n\n**Expected Response:**\n\n```\njson{  \"success\": true,  \"totalProducts\": 50,  \"resPerPage\": 8,  \"data\": [...]}\n\n ```\n\n---\n\n### 2\\. **Search by Keyword**\n\n```\nGET http://localhost:4000/api/v1/products?keyword=laptop\n\n ```\n\nThis will search for products with \"laptop\" in the name (case-insensitive).\n\n---\n\n### 3\\. **Pagination**\n\n```\nGET http://localhost:4000/api/v1/products?page=2\n\n ```\n\nGets the second page of results (products 9-16).\n\n---\n\n### 4\\. **Sort Products**\n\n```\nGET http://localhost:4000/api/v1/products?sortBy=-price\n\n ```\n\n- \\= Sort by price descending (highest first)\n    \n- \\= Sort by price ascending (lowest first)\n    \n- \\= Newest first (default)\n    \n- \\= Oldest first\n    \n\n---\n\n### 5\\. **Combine Multiple Filters**\n\n```\nGET http://localhost:4000/api/v1/products?keyword=phone&page=1&sortBy=-price\n\n ```\n\nSearch for \"phone\", first page, sorted by highest price.\n\n---\n\n### 6\\. **Get Single Product by ID**\n\n```\nGET http://localhost:4000/api/v1/products/{product_id}\n\n ```\n\nReplace\n\n```\n{product_id}\n\n ```\n\nwith an actual MongoDB ObjectId (24 hex characters).\n\n**Example:**\n\n```\nGET http://localhost:4000/api/v1/products/507f1f77bcf86cd799439011\n\n ```"
+          },
+          "response": []
+        },
+        {
+          "name": "Create new product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "789e19c6-4968-450f-88e1-117b131a5ae9",
+                "exec": [
+                  "pm.test(\"Response status code is 201\", function () {\r",
+                  "    pm.expect(pm.response.code).to.eql(201);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 200ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Response matches the expected schema for a new product\", function () {\r",
+                  "    const responseData = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(responseData).to.be.an('object');\r",
+                  "    pm.expect(responseData).to.have.all.keys('id', 'name', 'price', 'description', 'category', 'stock', 'created_at', 'updated_at');\r",
+                  "  \r",
+                  "    pm.expect(responseData.id).to.be.a('string');\r",
+                  "    pm.expect(responseData.name).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+                  "    pm.expect(responseData.price).to.be.a('number').and.to.be.at.least(0);\r",
+                  "    pm.expect(responseData.description).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+                  "    pm.expect(responseData.category).to.be.a('string').and.to.have.lengthOf.at.least(1);\r",
+                  "    pm.expect(responseData.stock).to.be.a('number').and.to.be.at.least(0);\r",
+                  "    pm.expect(new Date(responseData.created_at)).to.be.a('date');\r",
+                  "    pm.expect(new Date(responseData.updated_at)).to.be.a('date');\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Response contains the necessary fields\", function () {\r",
+                  "    const responseData = pm.response.json();\r",
+                  "    \r",
+                  "    pm.expect(responseData).to.be.an('object');\r",
+                  "    pm.expect(responseData).to.have.all.keys('id', 'name', 'price', 'category');\r",
+                  "});\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Price is a non-negative number\", function () {\r",
+                  "    const responseData = pm.response.json();\r",
+                  "    \r",
+                  "    pm.expect(responseData).to.be.an('object');\r",
+                  "    pm.expect(responseData.price).to.exist.and.to.be.a('number').and.to.be.at.least(0, \"Price should be non-negative\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "098f37d5-bb9f-4e7d-92f9-3fd8f648551e",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"remote control toy car\",\r\n    \"price\": 1299,\r\n    \"description\": \"fun remote control toy car with rechargeable battery and durable design.\",\r\n    \"ratings\": 4.4,\r\n    \"images\": [\r\n        {\r\n            \"public_id\": \"prod_img_009\",\r\n            \"url\": \"https://example.com/images/toycar.jpg\"\r\n        }\r\n    ],\r\n    \"category\": \"electronics\",\r\n    \"seller\": \"kids world\",\r\n    \"stock\": 60,\r\n    \"numOfReviews\": 5,\r\n    \"reviews\": [\r\n        {\r\n            \"name\": \"ananya verma\",\r\n            \"rating\": 5,\r\n            \"comment\": \"my son loves it, very sturdy build.\"\r\n        }\r\n    ],\r\n    \"createdAt\": \"2025-12-03T14:58:00.000Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/products",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products"
+              ]
+            },
+            "description": "## Create New Product\n\n**Endpoint:** `POST {{DOMAIN}}/api/v1/admin/products`\n\n### Summary\nCreates a new product in the system. This endpoint is typically used by administrators to add products to the catalog, including details such as name, price, description, category, images, stock, and reviews.\n\n---\n\n### Required Headers\n| Header           | Value              | Description                       |\n|------------------|--------------------|-----------------------------------|\n| `Accept`         | application/json   | Expected response format          |\n| `Content-Type`   | application/json   | Request body format               |\n| `Authorization`  | Bearer `<token>`   | **Required.** Admin access token  |\n\n> **Note:** The `Authorization` header must contain a valid Bearer token for an admin user.\n\n---\n\n### Sample Request Body\n```json\n{\n  \"name\": \"remote control toy car\",\n  \"price\": 1299,\n  \"description\": \"fun remote control toy car with rechargeable battery\",\n  \"ratings\": 4.4,\n  \"images\": [\n    {\n      \"public_id\": \"prod_img_009\",\n      \"url\": \"https://example.com/images/toycar.jpg\"\n    }\n  ],\n  \"category\": \"electronics\",\n  \"seller\": \"kids world\",\n  \"stock\": 60,\n  \"numOfReviews\": 5,\n  \"reviews\": [\n    {\n      \"name\": \"ananya verma\",\n      \"rating\": 5,\n      \"comment\": \"my son loves it, very sturdy build.\"\n    }\n  ],\n  \"createdAt\": \"2025-12-03T14:58:00.000Z\"\n}\n```\n\n#### Field Explanations\n- `name` *(string, required)*: Name of the product.\n- `price` *(number, required)*: Price in the smallest currency unit (e.g., cents).\n- `description` *(string, required)*: Description of the product.\n- `ratings` *(number, optional)*: Average product rating.\n- `images` *(array, optional)*: List of product images. Each image has:\n    - `public_id` *(string)*: Image identifier.\n    - `url` *(string)*: Image URL.\n- `category` *(string, required)*: Product category.\n- `seller` *(string, optional)*: Seller name.\n- `stock` *(number, required)*: Number of items in stock.\n- `numOfReviews` *(number, optional)*: Number of reviews.\n- `reviews` *(array, optional)*: List of reviews. Each review has:\n    - `name` *(string)*: Reviewer name.\n    - `rating` *(number)*: Review rating.\n    - `comment` *(string)*: Review comment.\n- `createdAt` *(string, ISO8601, optional)*: Product creation timestamp.\n\n---\n\n### Expected Response\n#### Success (201 Created)\nReturns the created product object.\n\n```json\n{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"price\": 0,\n  \"description\": \"string\",\n  \"category\": \"string\",\n  \"stock\": 0,\n  \"created_at\": \"ISO8601 timestamp\",\n  \"updated_at\": \"ISO8601 timestamp\"\n}\n```\n\n#### Error Responses\n- **401 Unauthorized**: Missing or invalid authentication token.\n- **403 Forbidden**: Insufficient permissions (not an admin).\n- **400 Bad Request**: Invalid or missing required fields.\n\n---\n\n### Authentication\nThis endpoint **requires** Bearer token authentication. Only users with admin privileges can access this endpoint.\n\n```\nAuthorization: Bearer <your_admin_token>\n```\n\n---\n\n### References\n- [Create new product](request/31840403-098f37d5-bb9f-4e7d-92f9-3fd8f648551e)\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch single product",
+          "id": "6ca37684-6726-4179-bbf4-4e8fa9db84f0",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/products/:id",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "69303eea31271e157e503a80"
+                }
+              ]
+            },
+            "description": "## Fetch Single Product\n\n**Purpose:**  \nRetrieve detailed information about a specific product by its unique identifier.\n\n---\n\n### Endpoint\n\n- **Method:** `GET`\n    \n- **URL:** `{{DOMAIN}}/api/v1/products/:id`\n    \n\n---\n\n### Path Variables\n\n- `id` (string, required): The unique identifier of the product to fetch.\n    - Example: `69303eea31271e157e503a80`\n        \n\n---\n\n### Example Usage\n\n```\nGET https://your-domain.com/api/v1/products/69303eea31271e157e503a80\nHeaders:\n  Accept: application/json\n  Content-Type: application/json\n\n ```\n\n---\n\n### Expected Response\n\n- **Status:** `200 OK`\n    \n- **Content-Type:** `application/json`\n    \n- **Body Example:**\n    \n\n``` json\n{\n  \"success\": true,\n  \"product\": {\n    \"_id\": \"69303eea31271e157e503a80\",\n    \"name\": \"Sample Product\",\n    \"description\": \"Product description here.\",\n    \"price\": 99.99,\n    \"category\": \"Electronics\",\n    \"stock\": 10,\n    \"ratings\": 4.5,\n    \"numOfReviews\": 12,\n    \"images\": [\n      { \"url\": \"https://...\" }\n    ],\n    ...\n  }\n}\n\n ```\n\n---\n\n### Related Requests\n\n- [Product Details](https://request/31840403-7cb1b3c8-35f8-42a6-af0b-6aec69a7195f)\n    \n\n---\n\n> **Best Practices:**"
+          },
+          "response": []
+        },
+        {
+          "name": "Update a Product",
+          "id": "187f840e-86a5-41bd-aac4-0a9ff766778a",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"price\": 2004.99,\r\n    \"stock\": 150\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/products/:id",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "69303eea31271e157e503a6a"
+                }
+              ]
+            },
+            "description": "Updates the price and stock of a specific product identified by its ID.\n\n- **Path Variable:**\n  - `id` (string): The unique identifier of the product to update.\n- **Request Body:**\n  - `price` (number): The new price of the product.\n  - `stock` (number): The updated stock quantity.\n- **Response:**\n  - Returns a JSON object with the updated product details or a status message indicating the result of the operation."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete a Product",
+          "id": "9229bd7d-363b-4ea0-8927-8778c4b7edb2",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/products/:id",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "products",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "693041b1150ba20faef8256c"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "b4c0efaf-e9c0-45ba-9202-aa04fb03ebd4",
+      "description": "Routes for all products."
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "id": "a3176852-30f2-4ad9-b627-22f479e31f2b",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Diana Prince\",\r\n    \"email\": \"diana.p@yopmail.com\",\r\n    \"password\": \"wonderWoman42\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/register",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "id": "116cc203-f53e-44a6-9148-cc88a1510e7f",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"alice.j@yopmail.com\",\r\n    \"password\": \"test1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/login",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout User",
+          "id": "76460b5b-cd62-4219-aa7b-6ec6a66f48bb",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/logout",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "id": "8b94253b-dad8-4e63-9814-eaac060c583e",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"jane.smith@yopmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/forgotPassword",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "forgotPassword"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "62d69f1a-dbb9-4796-80b5-5bb341f1ff91"
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "User Profile",
+          "id": "35df81d1-4127-46c5-a7da-7e4e72549539",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/me",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Password Update",
+          "id": "46bd7345-9ae8-4821-b678-3d632790f640",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"oldPassword\": \"qwerty123\",\r\n    \"password\": \"password\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/password/update",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "password",
+                "update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Profile",
+          "id": "d22e0375-e040-413b-bbac-56a53d78a4f2",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Aadhar gaur\",\r\n    \"email\": \"aadhar41@gmail.com\"\r\n}"
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/update/userprofile",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "update",
+                "userprofile"
+              ]
+            },
+            "description": "Updates the authenticated user's profile information (name and email).\n\n**Endpoint:** `PUT {{DOMAIN}}/api/v1/update/userprofile`\n\n**Purpose:**\nAllows a logged-in user to update their profile details, specifically their name and email address.\n\n**Request Body:**\n- `name` (string, required): The new name for the user.\n- `email` (string, required): The new email address for the user.\n\n**Headers:**\n- `Accept: application/json`\n- `Content-Type: application/json`\n- **Authentication required:** This endpoint requires the user to be authenticated (typically via Bearer token in the `Authorization` header).\n\n**Example Request Body:**\n```json\n{\n  \"name\": \"Aadhar gaur\",\n  \"email\": \"aadhar41@gmail.com\"\n}\n```\n\n**Success Response:**\n- **Status:** 200 OK\n- **Body:** Returns a JSON object containing `success: true` and the updated `user` object with fields such as `_id`, `name`, `email`, `role`, `avatar`, and `createdAt`.\n\n**Example Success Response:**\n```json\n{\n  \"success\": true,\n  \"user\": {\n    \"avatar\": {\n      \"public_id\": \"avatars/default\",\n      \"url\": \"https://via.placeholder.com/150\"\n    },\n    \"_id\": \"6932bb3821715a26a2d7e98b\",\n    \"name\": \"Aadhar gaur\",\n    \"email\": \"aadhar41@gmail.com\",\n    \"role\": \"admin\",\n    \"createdAt\": \"2025-12-05T11:00:08.008Z\",\n    \"__v\": 0\n  }\n}\n```\n\n**Notes:**\n- Only the authenticated user can update their own profile.\n- Both `name` and `email` fields are required in the request body."
+          },
+          "response": []
+        },
+        {
+          "name": "Get all users - Admin",
+          "id": "9ea95172-9e70-44bc-aba0-30140b53c858",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/users",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users"
+              ]
+            },
+            "description": "## Get all users - Admin\n\nRetrieves a list of all registered users in the system. This endpoint is intended for administrative use and provides detailed information about each user, including their profile, role, and account status.\n\n---\n\n### **Purpose**\n- Allows administrators to view all users for management, auditing, or reporting purposes.\n\n---\n\n### **Authentication**\n- **Required:** Yes (Admin privileges)\n- **Type:** Bearer Token\n- **Header Example:**\n  ```\n  Authorization: Bearer {{token}}\n  ```\n- The request must include a valid admin access token in the `Authorization` header.\n\n---\n\n### **Request**\n- **Method:** `GET`\n- **URL:** `{{DOMAIN}}/api/v1/admin/users`\n- **Headers:**\n  - `Accept: application/json`\n  - `Content-Type: application/json`\n  - `Authorization: Bearer {{token}}`\n- **Body:** _None_\n\n---\n\n### **Response**\n- **Status:** `200 OK` (on success)\n- **Content-Type:** `application/json`\n- **Body Structure:**\n  ```json\n  {\n    \"success\": true,\n    \"users\": [\n      {\n        \"avatar\": {\n          \"public_id\": \"avatars/default\",\n          \"url\": \"https://via.placeholder.com/150\"\n        },\n        \"_id\": \"<user_id>\",\n        \"name\": \"<user_name>\",\n        \"email\": \"<user_email>\",\n        \"role\": \"user|admin\",\n        \"createdAt\": \"<ISO8601_timestamp>\",\n        \"__v\": 0,\n        \"resetPasswordExpire\": \"<ISO8601_timestamp>\",\n        \"resetPasswordToken\": \"<token>\"\n      },\n      // ...more users\n    ]\n  }\n  ```\n- **Fields:**\n  - `success` _(boolean)_: Indicates if the request was successful.\n  - `users` _(array)_: List of user objects.\n    - `avatar` _(object)_: User's avatar info.\n      - `public_id` _(string)_\n      - `url` _(string)_\n    - `_id` _(string)_: Unique user ID.\n    - `name` _(string)_: User's full name.\n    - `email` _(string)_: User's email address.\n    - `role` _(string)_: User role (`user` or `admin`).\n    - `createdAt` _(string)_: Account creation timestamp.\n    - `__v` _(number)_: Version key.\n    - `resetPasswordExpire` _(string)_: Password reset expiry timestamp.\n    - `resetPasswordToken` _(string)_: Password reset token.\n\n---\n\n### **Usage Notes**\n- Only accessible by users with admin privileges.\n- Useful for user management dashboards, audits, or exporting user data.\n- Sensitive fields (like `resetPasswordToken`) should be handled securely and not exposed to unauthorized users.\n- For paginated or filtered results, check if the API supports additional query parameters.\n\n---\n\n### **Related Endpoints**\n- [Get single user - Admin]\n- [Update user - Admin]\n- [Delete user - Admin]\n\n---\n\nFor more details, contact the API administrator or refer to the main API documentation.\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Get user details - Admin",
+          "id": "1a1601ad-dd6b-44c1-a964-776912845b8e",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Aadhar gaur\",\r\n    \"email\": \"aadhar41@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/user/:id",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "user",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6932bb3821715a26a2d7e98b"
+                }
+              ]
+            },
+            "description": "Retrieves details for a specific admin user by their unique ID.\n\n**Path Variable:**\n- `id` (required): The unique identifier of the admin user to retrieve. Example: `6932bb3821715a26a2d7e98b`\n\n**Request:**\n- Method: `GET`\n- URL: `{{DOMAIN}}/api/v1/admin/user/:id`\n- Headers: `Accept: application/json`, `Content-Type: application/json`\n\n**Expected Response:**\n- Status: `200 OK`\n- Body (JSON):\n  ```json\n  {\n    \"success\": true,\n    \"user\": {\n      \"avatar\": {\n        \"public_id\": \"avatars/default\",\n        \"url\": \"https://via.placeholder.com/150\"\n      },\n      \"_id\": \"6932bb3821715a26a2d7e98b\",\n      \"name\": \"Aadhar gaur\",\n      \"email\": \"aadhar41@gmail.com\",\n      \"role\": \"admin\",\n      \"createdAt\": \"2025-12-05T11:00:08.008Z\",\n      \"__v\": 0\n    }\n  }\n  ```\n\n**Usage Notes:**\n- Ensure the `id` path variable is set to the correct admin user's ID.\n- The response includes user profile details such as avatar, name, email, role, and creation date.\n- Only accessible to authorized users with admin privileges."
+          },
+          "response": []
+        },
+        {
+          "name": "Update User - Admin",
+          "id": "05ce721a-19b1-4f62-919f-7caee8b8faef",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Aadhar gaur\",\r\n    \"email\": \"aadhar41@yopmail.com\",\r\n    \"role\": \"admin\"\r\n}"
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/user/:id",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "user",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6932bb3821715a26a2d7e98b"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User - Admin",
+          "id": "d19586c4-7671-47e6-bb03-51d0d9e3b33c",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/user/:id",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "user",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "69330abec293789a71e3cb16"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "cbfc7228-43e3-4f3a-a322-ed1dc361dc52"
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "id": "dd340ceb-18e6-4e0c-b8d5-8d8f8fe7f55b",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"orderItems\": [\r\n        {\r\n            \"name\": \"multi purpose tool kit\",\r\n            \"quantity\": 1,\r\n            \"image\": \"https://example.com/images/toolkit.jpg\",\r\n            \"price\": 1999,\r\n            \"product\": \"69303eea31271e157e503a86\"\r\n        }\r\n    ],\r\n    \"shippingInfo\": {\r\n        \"address\": \"456 Construction Street\",\r\n        \"city\": \"Pune\",\r\n        \"state\": \"Maharashtra\",\r\n        \"country\": \"India\",\r\n        \"postalCode\": \"411001\",\r\n        \"phoneNo\": \"+91 94234 56789\"\r\n    },\r\n    \"paymentInfo\": {\r\n        \"id\": \"PAYID-888999000\",\r\n        \"status\": \"COMPLETED\",\r\n        \"update_time\": \"2025-12-09T16:45:00Z\",\r\n        \"email_address\": \"vikas.yadav@example.com\"\r\n    },\r\n    \"itemPrice\": 1999.00,\r\n    \"shippingPrice\": 60.00,\r\n    \"taxPrice\": 199.90,\r\n    \"totalPrice\": 2258.90,\r\n    \"isPaid\": true,\r\n    \"paidAt\": \"2025-12-09T16:46:00Z\",\r\n    \"orderStatus\": \"Delivered\",\r\n    \"isDelivered\": true,\r\n    \"deliveredAt\": \"2025-12-11T11:00:00Z\",\r\n    \"createdAt\": \"2025-12-09T16:47:00Z\",\r\n    \"updatedAt\": \"2025-12-11T11:00:00Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/order/new",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "order",
+                "new"
+              ]
+            },
+            "description": "**Purpose:**\nCreates a new order in the system. This endpoint is typically used by an admin to place an order on behalf of a user. It records order items, shipping details, payment info, and order status.\n\n**Authentication:**\nRequires admin authentication (e.g., Bearer token in the Authorization header). Only authorized admin users can access this endpoint.\n\n**Request Body (JSON):**\n- `orderItems` (array, required): List of items in the order. Each item must include:\n  - `name` (string): Product name\n  - `quantity` (integer): Number of units\n  - `image` (string): Product image URL\n  - `price` (number): Price per unit\n  - `product` (string): Product ObjectId\n- `shippingInfo` (object, required): Shipping address details\n  - `address`, `city`, `state`, `country`, `postalCode`, `phoneNo`\n- `paymentInfo` (object, required): Payment details\n  - `id`, `status`, `update_time`, `email_address`\n- `itemPrice` (number, required): Total price of items\n- `shippingPrice` (number, required): Shipping cost\n- `taxPrice` (number, required): Tax amount\n- `totalPrice` (number, required): Grand total\n- `isPaid` (boolean, required): Payment status\n- `paidAt` (string, optional): ISO timestamp of payment\n- `orderStatus` (string, required): Order status (e.g., 'Processing')\n- `isDelivered` (boolean, required): Delivery status\n- `deliveredAt` (string/null, optional): ISO timestamp of delivery\n- `createdAt`, `updatedAt` (string, optional): Timestamps\n\n**Example Request:**\n```json\n{\n  \"orderItems\": [\n    {\n      \"name\": \"Cool T‑Shirt\",\n      \"quantity\": 2,\n      \"image\": \"https://example.com/images/tshirt.jpg\",\n      \"price\": 19.99,\n      \"product\": \"64a1f2c5e5b6c8d9e0f12345\"\n    },\n    {\n      \"name\": \"Stylish Sneakers\",\n      \"quantity\": 1,\n      \"image\": \"https://example.com/images/sneakers.jpg\",\n      \"price\": 79.5,\n      \"product\": \"64a1f2c5e5b6c8d9e0f67890\"\n    }\n  ],\n  \"shippingInfo\": {\n    \"address\": \"123 Orchard Road\",\n    \"city\": \"Singapore\",\n    \"state\": \"Central\",\n    \"country\": \"Singapore\",\n    \"postalCode\": \"238823\",\n    \"phoneNo\": \"+65 9123 4567\"\n  },\n  \"paymentInfo\": {\n    \"id\": \"PAYID-1234567890\",\n    \"status\": \"COMPLETED\",\n    \"update_time\": \"2025-12-09T07:30:00Z\",\n    \"email_address\": \"buyer@example.com\"\n  },\n  \"itemPrice\": 119.48,\n  \"shippingPrice\": 5.00,\n  \"taxPrice\": 8.00,\n  \"totalPrice\": 132.48,\n  \"isPaid\": true,\n  \"paidAt\": \"2025-12-09T07:31:00Z\",\n  \"orderStatus\": \"Processing\",\n  \"isDelivered\": false,\n  \"deliveredAt\": null,\n  \"createdAt\": \"2025-12-09T07:32:00Z\",\n  \"updatedAt\": \"2025-12-09T07:32:00Z\"\n}\n```\n\n**Example Response (201 Created):**\n```json\n{\n  \"success\": true,\n  \"order\": {\n    \"shippingInfo\": {\n      \"address\": \"123 Orchard Road\",\n      \"city\": \"Singapore\",\n      \"state\": \"Central\",\n      \"country\": \"Singapore\",\n      \"postalCode\": \"238823\",\n      \"phoneNo\": \"+65 9123 4567\"\n    },\n    \"user\": \"6933099bc293789a71e3cb08\",\n    \"orderItems\": [\n      {\n        \"name\": \"Cool T‑Shirt\",\n        \"quantity\": 2,\n        \"image\": \"https://example.com/images/tshirt.jpg\",\n        \"price\": 19.99,\n        \"product\": \"64a1f2c5e5b6c8d9e0f12345\",\n        \"_id\": \"6937d59dce13e887cb19be75\"\n      },\n      {\n        \"name\": \"Stylish Sneakers\",\n        \"quantity\": 1,\n        \"image\": \"https://example.com/images/sneakers.jpg\",\n        \"price\": 79.5,\n        \"product\": \"64a1f2c5e5b6c8d9e0f67890\",\n        \"_id\": \"6937d59dce13e887cb19be76\"\n      }\n    ],\n    \"paymentInfo\": {\n      \"id\": \"PAYID-1234567890\",\n      \"status\": \"COMPLETED\",\n      \"update_time\": \"2025-12-09T07:30:00Z\",\n      \"email_address\": \"buyer@example.com\"\n    },\n    \"itemPrice\": 119.48,\n    \"taxPrice\": 8,\n    \"shippingPrice\": 5,\n    \"totalPrice\": 132.48,\n    \"isPaid\": true,\n    \"paidAt\": \"2025-12-09T07:31:00.000Z\",\n    \"orderStatus\": \"Processing\",\n    \"isDelivered\": false,\n    \"deliveredAt\": null,\n    \"createdAt\": \"2025-12-09T07:32:00.000Z\",\n    \"updatedAt\": \"2025-12-09T07:32:00.000Z\",\n    \"_id\": \"6937d59dce13e887cb19be74\",\n    \"__v\": 0\n  }\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Get single order by ID",
+          "id": "1dc9b7f6-8fa9-4961-ac42-241d5b3dfc5b",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"orderItems\": [\r\n        {\r\n            \"name\": \"Cool T‑Shirt\",\r\n            \"quantity\": 2,\r\n            \"image\": \"https://example.com/images/tshirt.jpg\",\r\n            \"price\": 19.99,\r\n            \"product\": \"64a1f2c5e5b6c8d9e0f12345\" // <-- ObjectId of the product in your DB\r\n        },\r\n        {\r\n            \"name\": \"Stylish Sneakers\",\r\n            \"quantity\": 1,\r\n            \"image\": \"https://example.com/images/sneakers.jpg\",\r\n            \"price\": 79.5,\r\n            \"product\": \"64a1f2c5e5b6c8d9e0f67890\"\r\n        }\r\n    ],\r\n    \"shippingInfo\": {\r\n        \"address\": \"123 Orchard Road\",\r\n        \"city\": \"Singapore\",\r\n        \"state\": \"Central\",\r\n        \"country\": \"Singapore\",\r\n        \"postalCode\": \"238823\",\r\n        \"phoneNo\": \"+65 9123 4567\"\r\n    },\r\n    \"paymentInfo\": {\r\n        \"id\": \"PAYID-1234567890\",\r\n        \"status\": \"COMPLETED\",\r\n        \"update_time\": \"2025-12-09T07:30:00Z\",\r\n        \"email_address\": \"buyer@example.com\"\r\n    },\r\n    \"itemPrice\": 119.48, // sum of (price * quantity) for all items\r\n    \"shippingPrice\": 5.00,\r\n    \"taxPrice\": 8.00,\r\n    \"totalPrice\": 132.48,\r\n    \"isPaid\": true,\r\n    \"paidAt\": \"2025-12-09T07:31:00Z\",\r\n    \"orderStatus\": \"Processing\",\r\n    \"isDelivered\": false,\r\n    \"deliveredAt\": null,\r\n    \"createdAt\": \"2025-12-09T07:32:00Z\",\r\n    \"updatedAt\": \"2025-12-09T07:32:00Z\"\r\n}"
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/order/:id",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "order",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6937d59dce13e887cb19be74"
+                }
+              ]
+            },
+            "description": "## Get Single Order by ID\n\nRetrieve the details of a specific order by its unique ID. This endpoint is intended for admin users and returns comprehensive information about the order, including items, shipping, payment, and status.\n\n---\n\n### **Endpoint**\n```\nGET {{DOMAIN}}/api/v1/admin/order/:id\n```\n\n---\n\n### **Path Variables**\n| Variable | Type   | Description                |\n|----------|--------|----------------------------|\n| `id`     | string | Order ObjectId (required)  |\n\n---\n\n### **Headers**\n| Header                | Value                | Required |\n|-----------------------|----------------------|----------|\n| `Accept`              | application/json     | Yes      |\n| `Content-Type`        | application/json     | Yes      |\n| `Authorization`       | Bearer {token}       | Yes      |\n\n> **Authentication:** Requires admin privileges. Use a valid Bearer token in the `Authorization` header.\n\n---\n\n### **Example Request**\n```\nGET https://api.example.com/api/v1/admin/order/6937d59dce13e887cb19be74\nHeaders:\n  Accept: application/json\n  Content-Type: application/json\n  Authorization: Bearer <your_admin_token>\n```\n\n---\n\n### **Example Response**\n```json\n{\n  \"success\": true,\n  \"order\": {\n    \"_id\": \"6937d59dce13e887cb19be74\",\n    \"orderItems\": [\n      {\n        \"name\": \"Cool T‑Shirt\",\n        \"quantity\": 2,\n        \"image\": \"https://example.com/images/tshirt.jpg\",\n        \"price\": 19.99,\n        \"product\": \"64a1f2c5e5b6c8d9e0f12345\"\n      },\n      // ...more items\n    ],\n    \"shippingInfo\": {\n      \"address\": \"123 Orchard Road\",\n      \"city\": \"Singapore\",\n      \"state\": \"Central\",\n      \"country\": \"Singapore\",\n      \"postalCode\": \"238823\",\n      \"phoneNo\": \"+65 9123 4567\"\n    },\n    \"paymentInfo\": {\n      \"id\": \"PAYID-1234567890\",\n      \"status\": \"COMPLETED\",\n      \"update_time\": \"2025-12-09T07:30:00Z\",\n      \"email_address\": \"buyer@example.com\"\n    },\n    \"itemPrice\": 119.48,\n    \"shippingPrice\": 5.00,\n    \"taxPrice\": 8.00,\n    \"totalPrice\": 132.48,\n    \"isPaid\": true,\n    \"paidAt\": \"2025-12-09T07:31:00Z\",\n    \"orderStatus\": \"Processing\",\n    \"isDelivered\": false,\n    \"deliveredAt\": null,\n    \"createdAt\": \"2025-12-09T07:32:00Z\",\n    \"updatedAt\": \"2025-12-09T07:32:00Z\"\n  }\n}\n```\n\n---\n\n### **Notes**\n- **Request body is not required** for this GET endpoint.\n- The response includes all order details for the specified `id`.\n- Only accessible by admin users.\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Get logged in user orders",
+          "id": "8cc1d2a2-ecc1-4852-b574-3b6b3ae2cad9",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/orders/me",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "orders",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders - Admin",
+          "id": "358e6677-b40e-41d0-95a4-2009154f3819",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/orders",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "orders"
+              ]
+            },
+            "description": "**Get All Orders - Admin**\n\nThis endpoint retrieves all orders in the system. It is accessible only to admin users and returns a list of all orders, including detailed information for each order.\n\n**Authentication:**\n- Requires admin access (typically via Bearer token or session authentication with admin privileges).\n\n**Response Structure:**\n- `success` (boolean): Indicates if the request was successful.\n- `totalAmount` (number): The total amount of all orders.\n- `orders` (array): List of order objects. Each order contains:\n  - `shippingInfo`: Address, city, state, country, postal code, phone number.\n  - `paymentInfo`: Payment ID, status, update time, email address.\n  - `user`: User ID, name, email.\n  - `orderItems`: Array of items (name, quantity, image, price, product ID, item ID).\n  - `itemPrice`, `taxPrice`, `shippingPrice`, `totalPrice`: Pricing details.\n  - `isPaid`, `paidAt`: Payment status and timestamp.\n  - `orderStatus`: Current status (e.g., Processing, Shipped, Delivered).\n  - `isDelivered`, `deliveredAt`: Delivery status and timestamp.\n  - `createdAt`, `updatedAt`: Order creation and update timestamps.\n\n**Example Response:**\n```json\n{\n  \"success\": true,\n  \"totalAmount\": 807.92,\n  \"orders\": [\n    {\n      \"shippingInfo\": {\n        \"address\": \"123 Orchard Road\",\n        \"city\": \"Singapore\",\n        \"state\": \"Central\",\n        \"country\": \"Singapore\",\n        \"postalCode\": \"238823\",\n        \"phoneNo\": \"+65 9123 4567\"\n      },\n      \"paymentInfo\": {\n        \"id\": \"PAYID-1234567890\",\n        \"status\": \"COMPLETED\",\n        \"update_time\": \"2025-12-09T07:30:00Z\",\n        \"email_address\": \"buyer@example.com\"\n      },\n      \"_id\": \"6937d59dce13e887cb19be74\",\n      \"user\": {\n        \"_id\": \"6933099bc293789a71e3cb08\",\n        \"name\": \"Alice Johnson\",\n        \"email\": \"alice.j@yopmail.com\"\n      },\n      \"orderItems\": [\n        {\n          \"name\": \"Cool T‑Shirt\",\n          \"quantity\": 2,\n          \"image\": \"https://example.com/images/tshirt.jpg\",\n          \"price\": 19.99,\n          \"product\": null,\n          \"_id\": \"6937d59dce13e887cb19be75\"\n        },\n        {\n          \"name\": \"Stylish Sneakers\",\n          \"quantity\": 1,\n          \"image\": \"https://example.com/images/sneakers.jpg\",\n          \"price\": 79.5,\n          \"product\": null,\n          \"_id\": \"6937d59dce13e887cb19be76\"\n        }\n      ],\n      \"itemPrice\": 119.48,\n      \"taxPrice\": 8,\n      \"shippingPrice\": 5,\n      \"totalPrice\": 132.48,\n      \"isPaid\": true,\n      \"paidAt\": \"2025-12-09T07:31:00.000Z\",\n      \"orderStatus\": \"Processing\",\n      \"isDelivered\": false,\n      \"deliveredAt\": null,\n      \"createdAt\": \"2025-12-09T07:32:00.000Z\",\n      \"updatedAt\": \"2025-12-09T07:32:00.000Z\",\n      \"__v\": 0\n    }\n  ]\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Update / Process Order - Admin",
+          "id": "4657215c-21b7-4beb-8a4b-5dcccbd37ee6",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"orderStatus\": \"Delivered\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/order/:id",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "order",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6937ed8ad43c8bb2c2c5d330"
+                }
+              ]
+            },
+            "description": "## Update / Process Order (Admin)\n\n**Endpoint:** `PUT {{DOMAIN}}/api/v1/admin/order/:id`\n\n### 1. Summary\nThis endpoint allows an admin to update or process an order by its unique ID. Typical use cases include marking an order as delivered or updating its status.\n\n### 2. Path Variables\n- `id` (string, required): The unique identifier of the order to update. Example: `6937ed8ad43c8bb2c2c5d330`\n\n### 3. Request Body\n- **Content-Type:** `application/json`\n- **Schema:**\n  ```json\n  {\n    \"orderStatus\": \"Delivered\"\n  }\n  ```\n- **Fields:**\n  - `orderStatus` (string, required): The new status for the order. Example value: `Delivered`\n\n#### Example Request Body\n```json\n{\n  \"orderStatus\": \"Delivered\"\n}\n```\n\n### 4. Expected Response\n- **Status:** `200 OK` (on success)\n- **Content-Type:** `application/json`\n- **Sample Response:**\n  ```json\n  {\n    \"success\": true,\n    \"order\": {\n      \"shippingInfo\": {\n        \"address\": \"123 Main Street\",\n        \"city\": \"Jaipur\",\n        \"state\": \"Rajasthan\",\n        \"country\": \"India\",\n        \"postalCode\": \"302001\",\n        \"phoneNo\": \"+91 98765 43210\"\n      },\n      \"paymentInfo\": {\n        \"id\": \"PAYID-111222333\",\n        \"status\": \"COMPLETED\",\n        \"update_time\": \"2025-12-06T10:00:00Z\",\n        \"email_address\": \"john.doe@example.com\"\n      },\n      \"_id\": \"6937ed8ad43c8bb2c2c5d330\",\n      \"user\": \"6933099bc293789a71e3cb08\",\n      \"orderItems\": [\n        {\n          \"name\": \"wireless bluetooth headphones\",\n          \"quantity\": 1,\n          \"image\": \"https://example.com/images/headphones1.jpg\",\n          \"price\": 2004.99,\n          \"product\": \"69303eea31271e157e503a6a\",\n          \"_id\": \"6937ed8ad43c8bb2c2c5d331\"\n        }\n      ],\n      \"itemPrice\": 2004.99,\n      \"taxPrice\": 200.5,\n      \"shippingPrice\": 50,\n      \"totalPrice\": 2255.49,\n      \"isPaid\": true,\n      \"paidAt\": \"2025-12-06T10:01:00.000Z\",\n      \"orderStatus\": \"Delivered\",\n      \"isDelivered\": true,\n      \"deliveredAt\": \"2025-12-09T10:14:16.437Z\",\n      \"createdAt\": \"2025-12-06T10:02:00.000Z\",\n      \"updatedAt\": \"2025-12-06T10:02:00.000Z\",\n      \"__v\": 0\n    }\n  }\n  ```\n\n### 5. Authentication\n- **Required:** Yes (Admin privileges)\n- **How:** Typically via Bearer token in the `Authorization` header. Ensure you are logged in as an admin user.\n\n### 6. Notes\n- Only users with admin rights can access this endpoint.\n- The `orderStatus` field may support other values depending on the business logic (e.g., `Processing`, `Shipped`, `Delivered`).\n- Ensure the `id` provided exists and is valid, or a 404/400 error may be returned.\n"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Order - Admin",
+          "id": "2b236c7c-5fe8-4d71-86ac-567bf7d52afe",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/admin/order/:id",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "order",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6937edfed43c8bb2c2c5d351"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "3080a695-25df-4133-8c0f-0a17362ed946"
+    },
+    {
+      "name": "Review",
+      "item": [
+        {
+          "name": "Get all Reviews",
+          "id": "54994e99-852c-464f-a937-5bc5589c655f",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/products/reviews?id=69303eea31271e157e503a6a",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "69303eea31271e157e503a6a"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create / Update Product Review",
+          "id": "b58162f8-15c7-4194-ba9d-063c2d1598f3",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"rating\": 5,\r\n    \"comment\": \"Porta dignissim facilisi tempor letius maecenas nec tincidunt amet duis. Fusce ante habitasse turpis elit felis montes urna. Molestie quis dis leo malesuada nec facilisis massa netus suscipit non nostra. Sapien posuere convallis dis enim porttitor.Pellentesque mus himenaeos feugiat letius tempor facilisis felis. Litora posuere nascetur nullam si nec pretium justo felis nibh ante. Massa laoreet ligula cursus velit venenatis si id parturient luctus aliquet. Porta euismod primis et facilisis tellus molestie convallis egestas. Dictumst potenti integer lacus rhoncus vehicula letius eu si. Suspendisse blandit volutpat consequat finibus ac tortor vestibulum. Ultrices integer tristique molestie consectetuer netus ante. Fringilla per accumsan turpis volutpat nascetur quam tellus.\",\r\n    \"productId\": \"69303eea31271e157e503a6a\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/products/review",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "review"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Review",
+          "id": "869a9f8b-590c-4a2b-8a83-10f93a639cce",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{DOMAIN}}/api/v1/products/reviews?productId=69303eea31271e157e503a6a&id=69381672f6fe934ff9d8900b",
+              "host": [
+                "{{DOMAIN}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "productId",
+                  "value": "69303eea31271e157e503a6a"
+                },
+                {
+                  "key": "id",
+                  "value": "69381672f6fe934ff9d8900b"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "84ab87a2-46e7-4e66-a2d5-2b9220372ae8"
+    }
+  ]
+}
